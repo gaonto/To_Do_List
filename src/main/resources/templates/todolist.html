@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>To Do List</title>
+    <link rel="stylesheet" th:href="@{/styles.css}"/>
+
+    <style>
+        @font-face {
+            font-family: 'GowunDodum-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunDodum-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            font-family: 'GowunDodum-Regular', sans-serif;
+            background-color: #f2f4f8;
+        }
+        .completed-task {
+            text-decoration: line-through;
+            color: #555;
+        }
+        .todo-list li {
+            background-color: #ffffff;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+        .todo-list li:hover {
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background-color: #AAF0D1;
+            padding: 30px 25px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0 0 15px 0;
+        }
+        .header form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .header input[type="text"] {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .header input[type="text"]:focus {
+            border-color: #5cb85c;
+        }
+        .header button {
+            padding: 10px 18px;
+            background-color: #5cb85c;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .header button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Awesome한 To Do List입니다..............</h1>
+        <form th:action="@{/todos}" method="post">
+            <input type="text" name="task" placeholder="Enter a new task" required/>
+            <button type="submit">투두 추가</button>
+        </form>
+    </div>
+
+    <div class="todo-list">
+        <ul>
+            <li th:each="task: ${todos}">
+                <form th:action="@{/todos/toggle}" method="post" style="display:inline;">
+                    <input type="hidden" name="taskId" th:value="${task.id}" />
+                    <input type="checkbox" onclick="this.form.submit()" th:checked="${task.completed}" />
+                </form>
+
+                <span th:text="${task.description}" th:classappend="${task.completed} ? 'completed-task' : ''"></span>
+
+                <form th:action="@{/todos/update}" method="post" style="display:inline;">
+                    <input type="hidden" name="taskId" th:value="${task.id}"/>
+                    <input type="text" name="newDescription" placeholder="Edit Task" required />
+                    <button type="submit">Update</button>
+                </form>
+
+                <form th:action="@{/todos/delete}" method="post" style="display:inline;">
+                    <input type="hidden" name="taskId" th:value="${task.id}"/>
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
